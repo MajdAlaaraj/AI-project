@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import face_recognition
 import os
+from datetime import datetime
 
 path = 'images'
 images = []
@@ -13,8 +14,8 @@ for cl in myList:
     curImg = cv2.imread(f'{path}/{cl}')
     images.append(curImg)
     classNames.append(os.path.splitext(cl)[0])
-print(classNames)   
-#step 2
+print(classNames)
+# step 2
 def findEncodings (images):
     encodeList = []
     for img in images:
@@ -23,9 +24,24 @@ def findEncodings (images):
         encodeList.append(encode)
     return encodeList
 
-encodeListKnown = findEncodings(images)    
-print('encoding complete') 
+def markAttendance(name):
+    with open("Attendance.csv","r+") as f :
+        myDataList = f.readlines()
+        nameList = []
+        for line in myDataList:
+            entry = line.split(',')
+            nameList.append(entry[0])
+        if name not in nameList :
+            now = datetime.now()
+            stString = now.strftime('%H:%M:%S')
+            f.writelines(f"\n{name},{stString}")
+
+encodeListKnown = findEncodings(images)
+
+print('encoding complete')
+
 #step 3
+
 cap = cv2.VideoCapture(0)
 
 while True:
@@ -34,7 +50,8 @@ while True:
     smallImg = cv2.cvtColor(smallImg, cv2.COLOR_BGR2RGB)
     facesCurFrame = face_recognition.face_locations(smallImg)
     encodesCurFrame = face_recognition.face_encodings(smallImg,facesCurFrame)
-
+    
+    
 
     for encodeFace , faceLoc in zip(encodesCurFrame,facesCurFrame):
         matches = face_recognition.compare_faces(encodeListKnown , encodeFace)
@@ -51,6 +68,7 @@ while True:
             cv2.rectangle(img , (x1,y1),(x2,y2),(255,0,0),2)
             cv2.rectangle(img,(x1,y2-35),(x2,y2),(255,0,0),cv2.FILLED)
             cv2.putText(img,name,(x1+6,y2-6),cv2.FONT_HERSHEY_COMPLEX,1,(255,255,255),2)
+            markAttendance(name)
     cv2.imshow("webcam",img)
     cv2.waitKey(1)
 
