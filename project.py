@@ -90,7 +90,9 @@ def create_pdf():
     with open("Attendance.csv", "r") as f:
         for line in f:
             data.append(line.strip().split(","))
-
+    
+    header = ["University ID", "Name", "Year", "Department","Time"]
+    data.insert(0, header)
     # إنشاء جدول من البيانات
     table = Table(data)
 
