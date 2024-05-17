@@ -163,8 +163,6 @@ def update_frame():
                 known_faces.append(name)
                 insert_attendance_record(university_id, name, year, section) 
                 
-                
-
             info_label.config(text=f"Name: {name}\nUniversity ID: {student_details[0]} \nYear: {student_details[1]} \nSection: {student_details[2]} ")
         else:
             info_label.config(text="No Face Detected") 
