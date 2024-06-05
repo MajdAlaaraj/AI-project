@@ -84,18 +84,15 @@ exit_button.pack()
 def create_pdf():
     doc = SimpleDocTemplate("Attendance_Report.pdf", pagesize=letter)
     elements = []
-
     # استرجاع البيانات من ملف CSV
     data = []
     with open("Attendance.csv", "r") as f:
         for line in f:
             data.append(line.strip().split(","))
-    
     header = ["University ID", "Name", "Year", "Department","Time"]
     data.insert(0, header)
     # إنشاء جدول من البيانات
     table = Table(data)
-
     # تطبيق أنماط على الجدول
     style = TableStyle([
         ('BACKGROUND', (0,0), (-1,0), colors.grey),
@@ -108,7 +105,6 @@ def create_pdf():
         ('GRID', (0,0), (-1,-1), 1, colors.black),
     ])
     table.setStyle(style)
-
     # إضافة الجدول إلى العناصر
     elements.append(table)
 
